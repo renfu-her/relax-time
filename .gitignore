@@ -20,3 +20,6 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Release files (可選：如果不想提交發布文件)
+# release/
