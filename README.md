@@ -71,6 +71,29 @@ uv run python build_exe.py
 
 打包後的 exe 文件會在 `dist/` 目錄中。
 
+## 創建安裝程式
+
+使用 Inno Setup 創建 Windows 安裝程式：
+
+### 1. 安裝 Inno Setup
+
+下載並安裝 Inno Setup（免費）：
+- 官方網站: https://jrsoftware.org/isinfo.php
+
+### 2. 構建安裝程式
+
+```bash
+# 方法 1: 使用自動化腳本（推薦）
+uv run python build_installer.py
+
+# 方法 2: 使用 Inno Setup Compiler GUI
+# 打開 setup.iss 文件並編譯
+```
+
+安裝程式會生成在 `installer/` 目錄中。
+
+詳細說明請參考 [INSTALLER.md](INSTALLER.md)
+
 ## 新功能
 
 ### 循環模式

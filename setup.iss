@@ -63,9 +63,8 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon; IconFilename: "{app}\resources\alarm_clock.ico"
 
 [Run]
-; 開機啟動選項
-Filename: "{app}\{#MyAppExeName}"; Parameters: "--hidden"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent unchecked
-Filename: "{app}\{#MyAppExeName}"; Parameters: "--startup"; Description: "設定開機自動啟動"; Flags: nowait postinstall skipifsilent; Tasks: startup
+; 安裝後運行程式選項
+Filename: "{app}\{#MyAppExeName}"; Description: "啟動 {#MyAppName}"; Flags: nowait postinstall skipifsilent unchecked
 
 [Registry]
 ; 如果需要開機啟動，可以在這裡添加註冊表項
