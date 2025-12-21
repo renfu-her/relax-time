@@ -172,6 +172,17 @@ class TimerController:
         if self.model.state == TimerState.IDLE:
             self.view.update_time_display(self.model.remaining_seconds)
     
+    def set_loop_mode(self, enabled: bool):
+        """設置循環模式"""
+        self.model.set_loop_mode(enabled)
+    
+    def toggle_startup(self, enabled: bool):
+        """切換開機啟動"""
+        if enabled:
+            StartupManager.enable_startup()
+        else:
+            StartupManager.disable_startup()
+    
     def minimize_to_tray(self):
         """最小化到托盤"""
         if self.view:

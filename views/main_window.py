@@ -145,13 +145,39 @@ class MainWindow:
         )
         self.stop_btn.grid(row=0, column=2, padx=5)
         
+        # 循環模式開關
+        loop_frame = ttk.Frame(main_frame)
+        loop_frame.grid(row=4, column=0, columnspan=3, pady=(0, 10))
+        
+        self.loop_mode_var = tk.BooleanVar(value=False)
+        self.loop_checkbox = ttk.Checkbutton(
+            loop_frame,
+            text="循環模式（休息結束後自動重新開始）",
+            variable=self.loop_mode_var,
+            command=self._on_loop_mode_change
+        )
+        self.loop_checkbox.grid(row=0, column=0)
+        
+        # 開機啟動開關
+        startup_frame = ttk.Frame(main_frame)
+        startup_frame.grid(row=5, column=0, columnspan=3, pady=(0, 10))
+        
+        self.startup_var = tk.BooleanVar(value=False)
+        self.startup_checkbox = ttk.Checkbutton(
+            startup_frame,
+            text="開機自動啟動",
+            variable=self.startup_var,
+            command=self._on_startup_toggle
+        )
+        self.startup_checkbox.grid(row=0, column=0)
+        
         # 最小化到托盤按鈕
         self.tray_btn = ttk.Button(
             main_frame,
             text="最小化到托盤",
             command=self._on_minimize_to_tray
         )
-        self.tray_btn.grid(row=4, column=0, columnspan=3)
+        self.tray_btn.grid(row=6, column=0, columnspan=3)
         
         # 綁定視窗關閉事件
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
