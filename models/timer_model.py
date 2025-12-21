@@ -32,12 +32,21 @@ class TimerModel:
         self.pause_time: Optional[float] = None
         self.start_time: Optional[float] = None
         self.elapsed_before_pause = 0  # 暫停前已過時間（秒）
+        self.loop_mode = False  # 循環模式：休息結束後自動重新開始
         
         # 回調函數
         self.on_time_update: Optional[Callable[[int], None]] = None
         self.on_state_change: Optional[Callable[[TimerState], None]] = None
         self.on_timer_complete: Optional[Callable[[], None]] = None
         self.on_rest_complete: Optional[Callable[[], None]] = None
+    
+    def set_loop_mode(self, enabled: bool):
+        """設置循環模式"""
+        self.loop_mode = enabled
+    
+    def get_loop_mode(self) -> bool:
+        """取得循環模式狀態"""
+        return self.loop_mode
     
     def set_duration(self, minutes: int):
         """

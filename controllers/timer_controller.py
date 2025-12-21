@@ -7,6 +7,7 @@ from models.timer_model import TimerModel, TimerState
 from views.main_window import MainWindow
 from views.tray_icon import TrayIcon
 from utils.window_manager import WindowManager
+from utils.startup_manager import StartupManager
 
 
 class TimerController:
@@ -98,8 +99,17 @@ class TimerController:
         if self.view:
             self.view.show()
         
-        # 重置為 IDLE 狀態，可以重新開始
-        self.model.stop()
+        # 如果循環模式開啟，自動重新開始
+        if self.model.loop_mode:
+            print("循環模式：自動重新開始計時...")
+            # 重置為 IDLE 狀態後立即重新開始
+            self.model.stop()
+            # 稍微延遲後自動開始
+            import threading
+            threading.Timer(1.0, self.start_timer).start()
+        else:
+            # 重置為 IDLE 狀態，可以重新開始
+            self.model.stop()
     
     def _timer_loop(self):
         """計時器主迴圈（在獨立線程中運行）"""
@@ -120,6 +130,12 @@ class TimerController:
         self.view.on_stop = self.stop_timer
         self.view.on_duration_change = self.change_duration
         self.view.on_minimize_to_tray = self.minimize_to_tray
+        self.view.on_loop_mode_change = self.set_loop_mode
+        self.view.on_startup_toggle = self.toggle_startup
+        
+        # 初始化開機啟動狀態
+        startup_enabled = StartupManager.is_startup_enabled()
+        self.view.set_startup_enabled(startup_enabled)
         
         # 初始化托盤圖標
         self.tray = TrayIcon()

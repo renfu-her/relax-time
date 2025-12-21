@@ -54,6 +54,36 @@ python main.py
 uv run python main.py --hidden
 ```
 
+## 打包為 exe
+
+使用 PyInstaller 打包為 Windows exe：
+
+```bash
+# 安裝 PyInstaller（如果還沒安裝）
+uv sync
+
+# 使用 spec 文件打包（推薦）
+uv run pyinstaller pyinstaller.spec
+
+# 或使用打包腳本
+uv run python build_exe.py
+```
+
+打包後的 exe 文件會在 `dist/` 目錄中。
+
+## 新功能
+
+### 循環模式
+- 啟用循環模式後，休息時間結束會自動重新開始工作計時
+- 可透過主視窗的「循環模式」選項開關控制
+
+### 開機自動啟動
+- 可在主視窗中勾選「開機自動啟動」選項
+- 設定後會在 Windows 啟動時自動執行（隱藏模式）
+
+### 鬧鐘圖標
+- 視窗標題欄顯示鬧鐘圖標，更易識別
+
 ## 專案結構
 
 ```
@@ -69,8 +99,15 @@ relax-time/
 ├── controllers/            # Controller 層
 │   ├── __init__.py
 │   └── timer_controller.py # 時間控制器
-└── utils/                  # 工具類
-    ├── __init__.py
-    └── window_manager.py   # 視窗管理工具
+├── utils/                  # 工具類
+│   ├── __init__.py
+│   ├── window_manager.py   # 視窗管理工具
+│   ├── startup_manager.py  # 開機啟動管理
+│   └── icon_generator.py   # 圖標生成工具
+├── resources/              # 資源文件
+│   └── alarm_clock.ico     # 鬧鐘圖標
+├── pyproject.toml          # 專案配置
+├── pyinstaller.spec        # PyInstaller 打包配置
+└── build_exe.py            # 打包腳本
 ```
 

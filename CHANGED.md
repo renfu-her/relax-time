@@ -1,5 +1,28 @@
 # 更改記錄 (Change Log)
 
+## 2025-12-21 15:09:53
+
+### 新增功能
+- 🎨 **鬧鐘圖標**：視窗標題欄顯示鬧鐘圖標（`resources/alarm_clock.ico`）
+- 🔄 **循環模式開關**：新增循環模式選項，啟用後休息結束自動重新開始計時
+- 🚀 **開機自動啟動**：新增開機啟動選項，可設定 Windows 啟動時自動執行
+- 📦 **打包支援**：添加 PyInstaller 配置，可打包為 Windows exe 文件
+
+### 技術改進
+- 創建 `utils/icon_generator.py`：自動生成鬧鐘圖標（多尺寸 ICO 格式）
+- 創建 `utils/startup_manager.py`：Windows 註冊表開機啟動管理
+- 更新 `views/main_window.py`：添加圖標設置、循環模式開關、開機啟動開關
+- 更新 `models/timer_model.py`：添加 `loop_mode` 屬性和相關方法
+- 更新 `controllers/timer_controller.py`：實現循環模式邏輯和開機啟動管理
+- 創建 `pyinstaller.spec`：PyInstaller 打包配置文件
+- 創建 `build_exe.py`：打包腳本
+- 更新 `pyproject.toml`：添加 pyinstaller 依賴
+
+### 使用說明
+- 打包為 exe: `uv run pyinstaller pyinstaller.spec`
+- 開機啟動通過 Windows 註冊表實現（HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run）
+- 圖標在打包時自動包含在 exe 中
+
 ## 2025-12-21 12:04:35
 
 ### 依賴管理更新

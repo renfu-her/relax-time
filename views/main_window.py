@@ -2,6 +2,8 @@
 import tkinter as tk
 from tkinter import ttk
 from typing import Optional, Callable
+import os
+import sys
 
 
 class MainWindow:
@@ -18,15 +20,40 @@ class MainWindow:
         self.root.title("Relax Time - 時間管理工具")
         self.root.resizable(False, False)
         
+        # 設置視窗圖標（鬧鐘圖標）
+        self._set_icon()
+        
         # 回調函數
         self.on_start: Optional[Callable[[], None]] = None
         self.on_pause: Optional[Callable[[], None]] = None
         self.on_stop: Optional[Callable[[], None]] = None
         self.on_duration_change: Optional[Callable[[int], None]] = None
         self.on_minimize_to_tray: Optional[Callable[[], None]] = None
+        self.on_loop_mode_change: Optional[Callable[[bool], None]] = None
         
         self._setup_ui()
         self._center_window()
+    
+    def _set_icon(self):
+        """設置視窗圖標"""
+        # 如果是打包後的 exe
+        if getattr(sys, 'frozen', False):
+            # PyInstaller 打包後的臨時文件夾
+            if hasattr(sys, '_MEIPASS'):
+                base_path = sys._MEIPASS
+            else:
+                base_path = os.path.dirname(sys.executable)
+            icon_path = os.path.join(base_path, "resources", "alarm_clock.ico")
+        else:
+            # 開發環境路徑
+            base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            icon_path = os.path.join(base_path, "resources", "alarm_clock.ico")
+        
+        if os.path.exists(icon_path):
+            try:
+                self.root.iconbitmap(icon_path)
+            except Exception as e:
+                print(f"無法載入圖標: {e}")
     
     def _setup_ui(self):
         """設置 UI 元件"""
@@ -189,6 +216,16 @@ class MainWindow:
         if self.on_stop:
             self.on_stop()
     
+    def _on_loop_mode_change(self):
+        """循環模式開關改變"""
+        if self.on_loop_mode_change:
+            self.on_loop_mode_change(self.loop_mode_var.get())
+    
+    def _on_startup_toggle(self):
+        """開機啟動開關改變"""
+        if self.on_startup_toggle:
+            self.on_startup_toggle(self.startup_var.get())
+    
     def _on_minimize_to_tray(self):
         """最小化到托盤"""
         if self.on_minimize_to_tray:
@@ -198,6 +235,18 @@ class MainWindow:
         """視窗關閉事件 - 隱藏而非關閉"""
         if self.on_minimize_to_tray:
             self.on_minimize_to_tray()
+    
+    def set_loop_mode(self, enabled: bool):
+        """設置循環模式狀態"""
+        self.loop_mode_var.set(enabled)
+    
+    def get_loop_mode(self) -> bool:
+        """取得循環模式狀態"""
+        return self.loop_mode_var.get()
+    
+    def set_startup_enabled(self, enabled: bool):
+        """設置開機啟動狀態"""
+        self.startup_var.set(enabled)
     
     def update_time_display(self, seconds: int):
         """
