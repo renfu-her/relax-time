@@ -44,7 +44,7 @@ LanguageDetectionMethod=locale
 Name: "english"; MessagesFile: "compiler:Default.isl"
 ; 繁體中文語言文件（需要下載 ChineseTraditional.isl 到 Inno Setup 的 Languages 目錄）
 ; 下載地址: https://jrsoftware.org/files/istrans/
-Name: "chinesetraditional"; MessagesFile: "compiler:Languages\ChineseTraditional.isl"
+; Name: "chinesetraditional"; MessagesFile: "compiler:Languages\ChineseTraditional.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
