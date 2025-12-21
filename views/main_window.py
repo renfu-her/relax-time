@@ -28,8 +28,7 @@ class MainWindow:
         self.on_pause: Optional[Callable[[], None]] = None
         self.on_stop: Optional[Callable[[], None]] = None
         self.on_duration_change: Optional[Callable[[int], None]] = None
-        self.on_minimize_to_tray: Optional[Callable[[], None]] = None
-        self.on_loop_mode_change: Optional[Callable[[bool], None]] = None
+        self.on_show_settings: Optional[Callable[[], None]] = None
         
         self._setup_ui()
         self._center_window()
@@ -57,6 +56,15 @@ class MainWindow:
     
     def _setup_ui(self):
         """設置 UI 元件"""
+        # 創建選單欄
+        menubar = tk.Menu(self.root)
+        self.root.config(menu=menubar)
+        
+        # 設定選單
+        settings_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="設定", menu=settings_menu)
+        settings_menu.add_command(label="設定...", command=self._on_show_settings)
+        
         # 主框架
         main_frame = ttk.Frame(self.root, padding="20")
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
@@ -145,39 +153,13 @@ class MainWindow:
         )
         self.stop_btn.grid(row=0, column=2, padx=5)
         
-        # 循環模式開關
-        loop_frame = ttk.Frame(main_frame)
-        loop_frame.grid(row=4, column=0, columnspan=3, pady=(0, 10))
-        
-        self.loop_mode_var = tk.BooleanVar(value=False)
-        self.loop_checkbox = ttk.Checkbutton(
-            loop_frame,
-            text="循環模式（休息結束後自動重新開始）",
-            variable=self.loop_mode_var,
-            command=self._on_loop_mode_change
-        )
-        self.loop_checkbox.grid(row=0, column=0)
-        
-        # 開機啟動開關
-        startup_frame = ttk.Frame(main_frame)
-        startup_frame.grid(row=5, column=0, columnspan=3, pady=(0, 10))
-        
-        self.startup_var = tk.BooleanVar(value=False)
-        self.startup_checkbox = ttk.Checkbutton(
-            startup_frame,
-            text="開機自動啟動",
-            variable=self.startup_var,
-            command=self._on_startup_toggle
-        )
-        self.startup_checkbox.grid(row=0, column=0)
-        
-        # 最小化到托盤按鈕
-        self.tray_btn = ttk.Button(
+        # 設定按鈕
+        settings_btn = ttk.Button(
             main_frame,
-            text="最小化到托盤",
-            command=self._on_minimize_to_tray
+            text="設定",
+            command=self._on_show_settings
         )
-        self.tray_btn.grid(row=6, column=0, columnspan=3)
+        settings_btn.grid(row=4, column=0, columnspan=3, pady=(0, 20))
         
         # 綁定視窗關閉事件
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
@@ -242,15 +224,10 @@ class MainWindow:
         if self.on_stop:
             self.on_stop()
     
-    def _on_loop_mode_change(self):
-        """循環模式開關改變"""
-        if self.on_loop_mode_change:
-            self.on_loop_mode_change(self.loop_mode_var.get())
-    
-    def _on_startup_toggle(self):
-        """開機啟動開關改變"""
-        if self.on_startup_toggle:
-            self.on_startup_toggle(self.startup_var.get())
+    def _on_show_settings(self):
+        """顯示設定視窗"""
+        if self.on_show_settings:
+            self.on_show_settings()
     
     def _on_minimize_to_tray(self):
         """最小化到托盤"""
@@ -259,20 +236,7 @@ class MainWindow:
     
     def _on_close(self):
         """視窗關閉事件 - 隱藏而非關閉"""
-        if self.on_minimize_to_tray:
-            self.on_minimize_to_tray()
-    
-    def set_loop_mode(self, enabled: bool):
-        """設置循環模式狀態"""
-        self.loop_mode_var.set(enabled)
-    
-    def get_loop_mode(self) -> bool:
-        """取得循環模式狀態"""
-        return self.loop_mode_var.get()
-    
-    def set_startup_enabled(self, enabled: bool):
-        """設置開機啟動狀態"""
-        self.startup_var.set(enabled)
+        self.hide()
     
     def update_time_display(self, seconds: int):
         """

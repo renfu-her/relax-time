@@ -2,7 +2,7 @@
 ; 需要先安裝 Inno Setup: https://jrsoftware.org/isinfo.php
 
 #define MyAppName "Relax Time"
-#define MyAppVersion "0.2.0"
+#define MyAppVersion "0.3.0"
 #define MyAppPublisher "Relax Time Team"
 #define MyAppURL "https://github.com/yourusername/relax-time"
 #define MyAppExeName "RelaxTime.exe"

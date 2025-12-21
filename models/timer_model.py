@@ -39,7 +39,7 @@ class TimerModel:
         self.on_state_change: Optional[Callable[[TimerState], None]] = None
         self.on_timer_complete: Optional[Callable[[], None]] = None
         self.on_rest_complete: Optional[Callable[[], None]] = None
-        self.on_countdown_warning: Optional[Callable[[], None]] = None  # 倒數10秒警告
+        self.on_countdown_warning: Optional[Callable[[], None]] = None  # 倒數18秒警告
     
     def set_loop_mode(self, enabled: bool):
         """設置循環模式"""
@@ -48,6 +48,25 @@ class TimerModel:
     def get_loop_mode(self) -> bool:
         """取得循環模式狀態"""
         return self.loop_mode
+    
+    def set_rest_duration(self, minutes: int):
+        """
+        設定休息時間
+        
+        Args:
+            minutes: 分鐘數（必須是 5 的倍數）
+        """
+        if minutes < 5:
+            minutes = 5
+        # 向下取整到 5 的倍數
+        minutes = (minutes // 5) * 5
+        self.rest_duration = minutes
+        if self.state == TimerState.IDLE:
+            self.rest_remaining_seconds = minutes * 60
+    
+    def get_rest_duration(self) -> int:
+        """取得當前設定的休息時間（分鐘）"""
+        return self.rest_duration
     
     def set_duration(self, minutes: int):
         """
@@ -145,8 +164,8 @@ class TimerModel:
                 if self.on_time_update:
                     self.on_time_update(self.remaining_seconds)
                 
-                # 倒數10秒時播放提示音（只播放一次）
-                if self.remaining_seconds == 10 and not self.countdown_warning_played:
+                # 倒數18秒時播放提示音（只播放一次）
+                if self.remaining_seconds == 18 and not self.countdown_warning_played:
                     self.countdown_warning_played = True
                     if self.on_countdown_warning:
                         self.on_countdown_warning()

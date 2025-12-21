@@ -36,7 +36,7 @@ class AudioPlayer:
     @staticmethod
     def play_countdown_alarm():
         """
-        播放倒數提示音（10秒倒數）
+        播放倒數提示音（18秒倒數）
         
         Returns:
             bool: 播放是否成功

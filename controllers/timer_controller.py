@@ -6,6 +6,7 @@ from typing import Optional
 from models.timer_model import TimerModel, TimerState
 from views.main_window import MainWindow
 from views.tray_icon import TrayIcon
+from views.settings_window import SettingsWindow
 from utils.window_manager import WindowManager
 from utils.startup_manager import StartupManager
 from utils.audio_player import AudioPlayer
@@ -43,8 +44,8 @@ class TimerController:
         self.model.on_countdown_warning = self._on_countdown_warning
     
     def _on_countdown_warning(self):
-        """倒數10秒警告回調 - 播放提示音"""
-        print("倒數10秒，播放提示音...")
+        """倒數18秒警告回調 - 播放提示音"""
+        print("倒數18秒，播放提示音...")
         AudioPlayer.play_countdown_alarm()
     
     def _on_time_update(self, seconds: int):
@@ -136,13 +137,20 @@ class TimerController:
         self.view.on_pause = self.pause_timer
         self.view.on_stop = self.stop_timer
         self.view.on_duration_change = self.change_duration
-        self.view.on_minimize_to_tray = self.minimize_to_tray
-        self.view.on_loop_mode_change = self.set_loop_mode
-        self.view.on_startup_toggle = self.toggle_startup
+        self.view.on_show_settings = self.show_settings
         
-        # 初始化開機啟動狀態
+        # 創建設定視窗
+        self.settings = SettingsWindow(self.root)
+        self.settings.on_loop_mode_change = self.set_loop_mode
+        self.settings.on_startup_toggle = self.toggle_startup
+        self.settings.on_rest_duration_change = self.change_rest_duration
+        self.settings.on_minimize_to_tray = self.minimize_to_tray
+        
+        # 初始化設定視窗狀態
         startup_enabled = StartupManager.is_startup_enabled()
-        self.view.set_startup_enabled(startup_enabled)
+        self.settings.set_startup_enabled(startup_enabled)
+        self.settings.set_loop_mode(self.model.get_loop_mode())
+        self.settings.set_rest_duration(self.model.get_rest_duration())
         
         # 初始化托盤圖標
         self.tray = TrayIcon()
@@ -189,6 +197,15 @@ class TimerController:
             StartupManager.enable_startup()
         else:
             StartupManager.disable_startup()
+    
+    def change_rest_duration(self, minutes: int):
+        """改變休息時間設定"""
+        self.model.set_rest_duration(minutes)
+    
+    def show_settings(self):
+        """顯示設定視窗"""
+        if self.settings:
+            self.settings.show()
     
     def minimize_to_tray(self):
         """最小化到托盤"""
