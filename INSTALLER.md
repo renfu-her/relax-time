@@ -23,6 +23,16 @@ uv run pyinstaller pyinstaller.spec
 
 安裝時建議選擇完整安裝，包含所有組件。
 
+### 3. 安裝繁體中文語言文件（可選）
+
+如果需要支援繁體中文安裝介面：
+
+1. 訪問翻譯頁面：https://jrsoftware.org/files/istrans/
+2. 下載 `ChineseTraditional.isl` 文件
+3. 將文件複製到 Inno Setup 的 `Languages` 目錄（通常是 `C:\Program Files (x86)\Inno Setup 6\Languages\`）
+
+詳細說明請參考 [setup_languages.md](setup_languages.md)
+
 ## 構建安裝程式
 
 ### 方法 1: 使用自動化腳本（推薦）
