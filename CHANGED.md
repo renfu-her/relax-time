@@ -1,5 +1,52 @@
 # 更改記錄 (Change Log)
 
+## 2025-12-21 16:37:37
+
+### 版本更新
+- 📦 **版本號升級至 0.2.0**
+- 更新所有相關文件中的版本號引用
+
+## 2025-12-21 16:34:33
+
+### 新增功能
+- 🔊 **倒數10秒提示音**：在計時器倒數最後10秒時播放美妙的提示音
+
+### 技術改進
+- 創建 `utils/audio_player.py`：音頻播放工具類，使用 pyglet 播放 MP3
+- 添加音頻資源：`resources/countdown_alarm.mp3`（倒數提示音）
+- 更新 `models/timer_model.py`：添加倒數10秒警告回調和播放狀態追蹤
+- 更新 `controllers/timer_controller.py`：實現倒數10秒音頻播放
+- 更新 `pyproject.toml`：添加 pyglet 依賴
+- 更新 `pyinstaller.spec`：添加 pyglet 隱藏導入
+- 更新 `setup.iss` 和 `setup.wxs`：包含音頻文件到安裝程式
+- 更新 `README.md`：添加倒數10秒提示音功能說明
+
+### 功能說明
+- 當計時器倒數到最後10秒時，自動播放提示音
+- 每個計時週期只播放一次（防止重複播放）
+- 音頻在獨立線程中播放，不會阻塞 UI
+- 支援打包後和開發環境的音頻文件路徑
+- 使用 pyglet 庫，輕量且跨平台
+
+## 2025-12-21 15:40:00
+
+### 新增功能
+- 📦 **MSI 安裝程式支援**：添加 WiX Toolset 配置，可創建 MSI 格式的 Windows 安裝程式
+
+### 技術改進
+- 創建 `setup.wxs`：WiX Toolset MSI 安裝腳本配置文件
+- 創建 `build_msi.py`：自動化構建 MSI 安裝程式的腳本
+- 創建 `MSI_BUILD.md`：MSI 安裝程式構建指南
+- 更新 `build_release.py`：添加 MSI 構建支援
+- 更新 `README.md`：添加 MSI 安裝程式說明
+
+### MSI 安裝程式優點
+- Windows 標準格式
+- 支援靜默安裝（`msiexec /i file.msi /quiet`）
+- 更好的企業環境支援
+- 控制面板整合
+- 支援升級和修補
+
 ## 2025-12-21 15:35:56
 
 ### 新增功能

@@ -73,14 +73,41 @@ uv run python build_exe.py
 
 ## 創建安裝程式
 
-使用 Inno Setup 創建 Windows 安裝程式：
+### 方式一：MSI 安裝程式（推薦用於企業環境）
 
-### 1. 安裝 Inno Setup
+使用 WiX Toolset 創建 MSI 格式的 Windows 安裝程式：
+
+#### 1. 安裝 WiX Toolset
+
+下載並安裝 WiX Toolset（免費，微軟官方工具）：
+- 官方網站: https://wixtoolset.org/
+- 下載頁面: https://wixtoolset.org/releases/
+
+#### 2. 構建 MSI
+
+```bash
+uv run python build_msi.py
+```
+
+MSI 安裝程式會生成在 `installer/RelaxTime-Setup-0.2.0.msi`
+
+**優點：**
+- Windows 標準格式
+- 支援靜默安裝
+- 更好的企業部署支援
+
+詳細說明請參考 [MSI_BUILD.md](MSI_BUILD.md)
+
+### 方式二：Inno Setup 安裝程式（推薦用於個人用戶）
+
+使用 Inno Setup 創建 exe 格式的安裝程式：
+
+#### 1. 安裝 Inno Setup
 
 下載並安裝 Inno Setup（免費）：
 - 官方網站: https://jrsoftware.org/isinfo.php
 
-### 2. 構建安裝程式
+#### 2. 構建安裝程式
 
 ```bash
 # 方法 1: 使用自動化腳本（推薦）
@@ -90,7 +117,7 @@ uv run python build_installer.py
 # 打開 setup.iss 文件並編譯
 ```
 
-安裝程式會生成在 `installer/` 目錄中。
+安裝程式會生成在 `installer/RelaxTime-Setup-0.2.0.exe`
 
 詳細說明請參考 [INSTALLER.md](INSTALLER.md)
 
@@ -106,6 +133,10 @@ uv run python build_installer.py
 
 ### 鬧鐘圖標
 - 視窗標題欄顯示鬧鐘圖標，更易識別
+
+### 倒數10秒提示音
+- 當計時器倒數到最後10秒時，自動播放美妙的提示音
+- 幫助您提前準備，避免錯過休息時間
 
 ## 專案結構
 

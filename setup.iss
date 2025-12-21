@@ -2,7 +2,7 @@
 ; 需要先安裝 Inno Setup: https://jrsoftware.org/isinfo.php
 
 #define MyAppName "Relax Time"
-#define MyAppVersion "0.1.0"
+#define MyAppVersion "0.2.0"
 #define MyAppPublisher "Relax Time Team"
 #define MyAppURL "https://github.com/yourusername/relax-time"
 #define MyAppExeName "RelaxTime.exe"
@@ -54,8 +54,9 @@ Name: "startup"; Description: "開機自動啟動"; GroupDescription: "選項"; 
 [Files]
 ; 主程式文件
 Source: "dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-; 資源文件（如果需要）
+; 資源文件
 Source: "resources\alarm_clock.ico"; DestDir: "{app}\resources"; Flags: ignoreversion
+Source: "resources\countdown_alarm.mp3"; DestDir: "{app}\resources"; Flags: ignoreversion
 ; 注意: 不要在任何共享系統文件上使用 "Flags: ignoreversion"
 
 [Icons]

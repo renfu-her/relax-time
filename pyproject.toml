@@ -1,6 +1,6 @@
 [project]
 name = "relax-time"
-version = "0.1.0"
+version = "0.2.0"
 description = "Windows 時間管理工具 - 幫助您管理工作時間和休息時間"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -8,4 +8,5 @@ dependencies = [
     "pystray>=0.19.5",
     "Pillow>=10.0.0",
     "pyinstaller>=6.0.0",
+    "pyglet>=2.0.0",
 ]

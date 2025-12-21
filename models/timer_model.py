@@ -39,6 +39,7 @@ class TimerModel:
         self.on_state_change: Optional[Callable[[TimerState], None]] = None
         self.on_timer_complete: Optional[Callable[[], None]] = None
         self.on_rest_complete: Optional[Callable[[], None]] = None
+        self.on_countdown_warning: Optional[Callable[[], None]] = None  # 倒數10秒警告
     
     def set_loop_mode(self, enabled: bool):
         """設置循環模式"""
@@ -90,6 +91,7 @@ class TimerModel:
             self.start_time = time.time()
             self.elapsed_before_pause = 0
             self.state = TimerState.RUNNING
+            self.countdown_warning_played = False  # 重置警告音標記
         
         if self.on_state_change:
             self.on_state_change(self.state)
@@ -142,6 +144,12 @@ class TimerModel:
                 
                 if self.on_time_update:
                     self.on_time_update(self.remaining_seconds)
+                
+                # 倒數10秒時播放提示音（只播放一次）
+                if self.remaining_seconds == 10 and not self.countdown_warning_played:
+                    self.countdown_warning_played = True
+                    if self.on_countdown_warning:
+                        self.on_countdown_warning()
                 
                 if self.remaining_seconds <= 0:
                     self.state = TimerState.IDLE

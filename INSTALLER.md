@@ -73,7 +73,7 @@ uv run python build_installer.py
 編譯成功後，安裝程式會生成在：
 
 ```
-installer/RelaxTime-Setup-0.1.0.exe
+installer/RelaxTime-Setup-0.2.0.exe
 ```
 
 ## 自定義安裝程式

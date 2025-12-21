@@ -64,9 +64,27 @@ def build_exe():
     print(f"\n✓ exe 文件構建成功: {exe_path} ({file_size:.2f} MB)")
     return True
 
+def build_installer_msi():
+    """構建 MSI 安裝程式"""
+    print_step("步驟 2a: 構建 MSI 安裝程式")
+    
+    # 檢查 exe 是否存在
+    if not Path("dist/RelaxTime.exe").exists():
+        print("錯誤: 找不到 dist/RelaxTime.exe")
+        print("請先運行步驟 1 構建 exe 文件")
+        return False
+    
+    # 運行 MSI 構建腳本
+    success = run_command(
+        "python build_msi.py",
+        "構建 MSI 安裝程式"
+    )
+    
+    return success
+
 def build_installer():
-    """構建安裝程式"""
-    print_step("步驟 2: 構建安裝程式")
+    """構建 Inno Setup 安裝程式"""
+    print_step("步驟 2b: 構建 Inno Setup 安裝程式")
     
     # 檢查 exe 是否存在
     if not Path("dist/RelaxTime.exe").exists():
@@ -107,7 +125,7 @@ def build_installer():
         return False
     
     # 檢查輸出文件
-    installer_path = Path("installer/RelaxTime-Setup-0.1.0.exe")
+    installer_path = Path("installer/RelaxTime-Setup-0.2.0.exe")
     if installer_path.exists():
         file_size = installer_path.stat().st_size / (1024 * 1024)  # MB
         print(f"\n✓ 安裝程式構建成功: {installer_path} ({file_size:.2f} MB)")
@@ -125,7 +143,8 @@ def prepare_release():
     
     files_to_copy = [
         ("dist/RelaxTime.exe", "RelaxTime.exe"),
-        ("installer/RelaxTime-Setup-0.1.0.exe", "RelaxTime-Setup-0.1.0.exe"),
+        ("installer/RelaxTime-Setup-0.2.0.msi", "RelaxTime-Setup-0.2.0.msi"),
+        ("installer/RelaxTime-Setup-0.2.0.exe", "RelaxTime-Setup-0.2.0.exe"),
         ("README.md", "README.md"),
         ("RELEASE_NOTES.md", "RELEASE_NOTES.md"),
     ]
@@ -163,9 +182,16 @@ def main():
         sys.exit(1)
     
     # 步驟 2: 構建安裝程式（可選）
+    # 嘗試構建 MSI
+    msi_built = build_installer_msi()
+    
+    # 嘗試構建 Inno Setup
     installer_built = build_installer()
-    if not installer_built:
-        print("\n⚠ 安裝程式構建失敗或跳過，將只包含 exe 文件")
+    
+    if not msi_built and not installer_built:
+        print("\n⚠ 所有安裝程式構建失敗或跳過，將只包含 exe 文件")
+    elif msi_built or installer_built:
+        print("\n✓ 至少一個安裝程式構建成功")
     
     # 步驟 3: 準備發布文件
     if not prepare_release():

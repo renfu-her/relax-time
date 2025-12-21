@@ -8,6 +8,7 @@ from views.main_window import MainWindow
 from views.tray_icon import TrayIcon
 from utils.window_manager import WindowManager
 from utils.startup_manager import StartupManager
+from utils.audio_player import AudioPlayer
 
 
 class TimerController:
@@ -39,6 +40,12 @@ class TimerController:
         self.model.on_state_change = self._on_state_change
         self.model.on_timer_complete = self._on_timer_complete
         self.model.on_rest_complete = self._on_rest_complete
+        self.model.on_countdown_warning = self._on_countdown_warning
+    
+    def _on_countdown_warning(self):
+        """倒數10秒警告回調 - 播放提示音"""
+        print("倒數10秒，播放提示音...")
+        AudioPlayer.play_countdown_alarm()
     
     def _on_time_update(self, seconds: int):
         """時間更新回調"""

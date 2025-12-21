@@ -21,7 +21,7 @@ uv run python build_release.py
 
 確保 `release/` 目錄包含：
 - `RelaxTime.exe` - 可執行文件
-- `RelaxTime-Setup-0.1.0.exe` - 安裝程式（如果已構建）
+- `RelaxTime-Setup-0.2.0.exe` - 安裝程式（如果已構建）
 - `README.md` - 說明文檔
 - `RELEASE_NOTES.md` - 發布說明
 
@@ -31,21 +31,21 @@ uv run python build_release.py
 
 ```bash
 # 創建並推送 tag
-git tag -a v0.1.0 -m "Release version 0.1.0"
-git push origin v0.1.0
+git tag -a v0.2.0 -m "Release version 0.2.0"
+git push origin v0.2.0
 ```
 
 或者使用 GitHub Web 界面：
 - 前往 Releases 頁面
 - 點擊 "Create a new release"
-- 在 "Choose a tag" 中輸入 `v0.1.0`
-- 選擇 "Create new tag: v0.1.0 on publish"
+- 在 "Choose a tag" 中輸入 `v0.2.0`
+- 選擇 "Create new tag: v0.2.0 on publish"
 
 ### 步驟 2: 填寫 Release 信息
 
 **Release title（標題）：**
 ```
-Relax Time v0.1.0 - 首次發布
+Relax Time v0.2.0
 ```
 
 **Release notes（說明）：**
@@ -69,7 +69,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 ## 📦 下載
 
 ### 推薦：安裝程式
-下載 `RelaxTime-Setup-0.1.0.exe` 並執行安裝
+下載 `RelaxTime-Setup-0.2.0.exe` 並執行安裝
 
 ### 便攜版
 下載 `RelaxTime.exe` 直接執行（無需安裝）
@@ -95,7 +95,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 
 在 "Attach binaries" 區域：
 
-1. 上傳 `RelaxTime-Setup-0.1.0.exe`（安裝程式）- **推薦**
+1. 上傳 `RelaxTime-Setup-0.2.0.exe`（安裝程式）- **推薦**
 2. 上傳 `RelaxTime.exe`（可執行文件）- 便攜版
 
 **建議：**
@@ -126,7 +126,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 建議使用 [Semantic Versioning](https://semver.org/)：
 
 - `主版本號.次版本號.修訂號`
-- 例如：`0.1.0`, `0.2.0`, `1.0.0`
+- 例如：`0.2.0`, `0.3.0`, `1.0.0`
 
 ## 常見問題
 

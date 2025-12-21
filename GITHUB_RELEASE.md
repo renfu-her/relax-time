@@ -1,4 +1,4 @@
-# Relax Time v0.1.0 - 首次發布
+# Relax Time v0.2.0
 
 ## 🎉 首次發布
 
@@ -38,7 +38,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 ## 📦 下載
 
 ### 推薦：安裝程式
-下載 `RelaxTime-Setup-0.1.0.exe` 並執行安裝
+下載 `RelaxTime-Setup-0.2.0.exe` 並執行安裝
 
 **優點：**
 - 標準 Windows 安裝流程
@@ -57,7 +57,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 ## 🚀 快速開始
 
 1. **安裝或執行**
-   - 使用安裝程式：下載 `RelaxTime-Setup-0.1.0.exe` 並安裝
+   - 使用安裝程式：下載 `RelaxTime-Setup-0.2.0.exe` 並安裝
    - 或直接執行：下載 `RelaxTime.exe` 雙擊運行
 
 2. **開始使用**
