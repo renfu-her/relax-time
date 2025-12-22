@@ -53,10 +53,16 @@ class CountdownOverlay:
         self.overlay_root = tk.Toplevel(self.parent_root)
         self.overlay_root.title("")
         
-        # 設置全螢幕
-        self.overlay_root.overrideredirect(True)  # 移除標題欄
-        self.overlay_root.attributes('-fullscreen', True)
-        self.overlay_root.attributes('-topmost', True)  # 置頂
+        # 移除標題欄（必須在設置全螢幕之前）
+        self.overlay_root.overrideredirect(True)
+        
+        # 設置置頂
+        self.overlay_root.attributes('-topmost', True)
+        
+        # 手動設置全螢幕大小（因為 overrideredirect 和 -fullscreen 不能同時使用）
+        screen_width = self.overlay_root.winfo_screenwidth()
+        screen_height = self.overlay_root.winfo_screenheight()
+        self.overlay_root.geometry(f"{screen_width}x{screen_height}+0+0")
         
         # 設置透明黑色背景
         self.overlay_root.configure(bg='black')
