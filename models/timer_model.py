@@ -195,11 +195,7 @@ class TimerModel:
                 if self.on_time_update:
                     self.on_time_update(self.rest_remaining_seconds)
                 
-                # 休息時間倒數5秒時顯示全螢幕遮罩（只顯示一次）
-                if self.rest_remaining_seconds == 5 and not self.final_countdown_shown:
-                    self.final_countdown_shown = True
-                    if self.on_final_countdown:
-                        self.on_final_countdown()
+                # 休息時間不需要倒數遮罩，直接恢復工作
                 
                 if self.rest_remaining_seconds <= 0:
                     self.state = TimerState.IDLE

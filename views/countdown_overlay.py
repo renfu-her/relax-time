@@ -1,12 +1,14 @@
 """全螢幕倒數遮罩視窗"""
 import tkinter as tk
-from typing import Optional, Callable
+from typing import Optional, Callable, List
 import threading
 import time
+import ctypes
+from ctypes import wintypes
 
 
 class CountdownOverlay:
-    """全螢幕透明黑色遮罩，顯示倒數 5, 4, 3, 2, 1"""
+    """全螢幕透明黑色遮罩，顯示倒數 5, 4, 3, 2, 1，支援多螢幕"""
     
     def __init__(self, parent_root: Optional[tk.Tk] = None):
         """
@@ -16,8 +18,8 @@ class CountdownOverlay:
             parent_root: 父視窗（tk.Tk），用於創建 Toplevel
         """
         self.parent_root = parent_root
-        self.overlay_root: Optional[tk.Toplevel] = None
-        self.countdown_label: Optional[tk.Label] = None
+        self.overlay_windows: List[tk.Toplevel] = []  # 多個螢幕的遮罩視窗
+        self.countdown_labels: List[tk.Label] = []  # 每個螢幕的倒數標籤
         self.is_showing = False
         self.on_countdown_complete: Optional[Callable[[], None]] = None
         self._countdown_thread: Optional[threading.Thread] = None
@@ -42,48 +44,120 @@ class CountdownOverlay:
         self._countdown_thread = threading.Thread(target=self._countdown_loop, daemon=True)
         self._countdown_thread.start()
     
+    def _get_all_monitors(self):
+        """獲取所有顯示器的信息"""
+        monitors = []
+        
+        # 定義 Windows API 結構和函數
+        class RECT(ctypes.Structure):
+            _fields_ = [("left", ctypes.c_long),
+                       ("top", ctypes.c_long),
+                       ("right", ctypes.c_long),
+                       ("bottom", ctypes.c_long)]
+        
+        def monitor_enum_proc(hmonitor, hdc, lprect, lparam):
+            """監視器枚舉回調函數"""
+            rect = lprect.contents
+            monitors.append({
+                'left': rect.left,
+                'top': rect.top,
+                'right': rect.right,
+                'bottom': rect.bottom,
+                'width': rect.right - rect.left,
+                'height': rect.bottom - rect.top
+            })
+            return True
+        
+        # 設置回調函數類型
+        MonitorEnumProc = ctypes.WINFUNCTYPE(
+            ctypes.c_int,
+            ctypes.c_ulong,
+            ctypes.c_ulong,
+            ctypes.POINTER(RECT),
+            ctypes.c_ulong
+        )
+        
+        # 調用 EnumDisplayMonitors
+        user32 = ctypes.windll.user32
+        callback = MonitorEnumProc(monitor_enum_proc)
+        user32.EnumDisplayMonitors(None, None, callback, 0)
+        
+        return monitors
+    
     def _create_overlay(self):
-        """創建全螢幕遮罩視窗"""
+        """創建全螢幕遮罩視窗（支援多螢幕）"""
         if not self.parent_root:
             # 如果沒有父視窗，創建一個臨時的
             self.parent_root = tk.Tk()
             self.parent_root.withdraw()  # 隱藏父視窗
         
-        # 創建頂層視窗
-        self.overlay_root = tk.Toplevel(self.parent_root)
-        self.overlay_root.title("")
+        # 獲取所有顯示器
+        monitors = self._get_all_monitors()
         
-        # 移除標題欄（必須在設置全螢幕之前）
-        self.overlay_root.overrideredirect(True)
+        if not monitors:
+            # 如果無法獲取顯示器信息，使用主螢幕
+            temp_root = tk.Tk()
+            temp_root.withdraw()
+            screen_width = temp_root.winfo_screenwidth()
+            screen_height = temp_root.winfo_screenheight()
+            monitors = [{'left': 0, 'top': 0, 'width': screen_width, 'height': screen_height}]
+            temp_root.destroy()
         
-        # 設置置頂
-        self.overlay_root.attributes('-topmost', True)
+        # 為每個顯示器創建遮罩視窗
+        for monitor in monitors:
+            overlay = tk.Toplevel(self.parent_root)
+            overlay.title("")
+            
+            # 移除標題欄
+            overlay.overrideredirect(True)
+            
+            # 設置置頂
+            overlay.attributes('-topmost', True)
+            
+            # 設置透明黑色背景
+            overlay.configure(bg='black')
+            overlay.attributes('-alpha', 0.7)  # 70% 透明度
+            
+            # 設置視窗位置和大小
+            x = monitor['left']
+            y = monitor['top']
+            width = monitor['width']
+            height = monitor['height']
+            overlay.geometry(f"{width}x{height}+{x}+{y}")
+            
+            # 創建倒數標籤（只在主螢幕顯示，或每個螢幕都顯示）
+            # 這裡選擇在主螢幕（第一個）顯示倒數，其他螢幕只顯示遮罩
+            if len(self.countdown_labels) == 0:
+                # 主螢幕顯示倒數數字
+                label = tk.Label(
+                    overlay,
+                    text="5",
+                    font=("Arial", 200, "bold"),
+                    fg="white",
+                    bg="black"
+                )
+                label.place(relx=0.5, rely=0.5, anchor="center")
+                self.countdown_labels.append(label)
+            else:
+                # 其他螢幕不顯示數字，只顯示遮罩
+                self.countdown_labels.append(None)
+            
+            # 更新視窗以確保所有設置生效
+            overlay.update_idletasks()
+            
+            # 確保視窗置頂
+            overlay.lift()
+            
+            self.overlay_windows.append(overlay)
         
-        # 手動設置全螢幕大小（因為 overrideredirect 和 -fullscreen 不能同時使用）
-        screen_width = self.overlay_root.winfo_screenwidth()
-        screen_height = self.overlay_root.winfo_screenheight()
-        self.overlay_root.geometry(f"{screen_width}x{screen_height}+0+0")
+        # 確保第一個視窗獲得焦點並捕獲輸入
+        if self.overlay_windows:
+            self.overlay_windows[0].focus_force()
+            self.overlay_windows[0].grab_set()  # 捕獲所有輸入
         
-        # 設置透明黑色背景
-        self.overlay_root.configure(bg='black')
-        self.overlay_root.attributes('-alpha', 0.7)  # 70% 透明度
-        
-        # 創建倒數標籤
-        self.countdown_label = tk.Label(
-            self.overlay_root,
-            text="5",
-            font=("Arial", 200, "bold"),
-            fg="white",
-            bg="black"
-        )
-        self.countdown_label.place(relx=0.5, rely=0.5, anchor="center")
-        
-        # 確保視窗獲得焦點
-        self.overlay_root.focus_force()
-        self.overlay_root.grab_set()  # 捕獲所有輸入
-        
-        # 更新視窗以確保顯示
-        self.overlay_root.update()
+        # 強制更新所有視窗
+        for overlay in self.overlay_windows:
+            overlay.update()
     
     def _countdown_loop(self):
         """倒數循環：5, 4, 3, 2, 1"""
@@ -91,9 +165,9 @@ class CountdownOverlay:
             if not self.is_showing:
                 break
             
-            # 在主線程中更新標籤
-            if self.overlay_root and self.countdown_label:
-                self.overlay_root.after(0, lambda n=i: self.countdown_label.config(text=str(n)))
+            # 在主線程中更新標籤（只更新主螢幕的標籤）
+            if self.overlay_windows and self.countdown_labels and self.countdown_labels[0]:
+                self.overlay_windows[0].after(0, lambda n=i: self.countdown_labels[0].config(text=str(n)))
             
             time.sleep(1)
         
@@ -106,19 +180,21 @@ class CountdownOverlay:
                 self.on_countdown_complete()
     
     def hide(self):
-        """隱藏遮罩視窗"""
+        """隱藏遮罩視窗（所有螢幕）"""
         if not self.is_showing:
             return
         
         self.is_showing = False
         
-        if self.overlay_root:
+        # 關閉所有遮罩視窗
+        for overlay in self.overlay_windows:
             try:
-                self.overlay_root.grab_release()
-                self.overlay_root.destroy()
+                if overlay == self.overlay_windows[0]:
+                    overlay.grab_release()
+                overlay.destroy()
             except:
                 pass
-            finally:
-                self.overlay_root = None
-                self.countdown_label = None
+        
+        self.overlay_windows.clear()
+        self.countdown_labels.clear()
 

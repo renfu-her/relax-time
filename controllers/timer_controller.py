@@ -54,9 +54,22 @@ class TimerController:
         AudioPlayer.play_countdown_alarm()
     
     def _on_final_countdown(self):
-        """倒數5秒回調 - 顯示全螢幕遮罩"""
+        """倒數5秒回調 - 顯示全螢幕遮罩（僅在工作時間）"""
         print("倒數5秒，顯示全螢幕遮罩...")
         
+        # 只在工作時間顯示遮罩，休息時間不需要
+        if self.model.state != TimerState.RUNNING:
+            return
+        
+        # 確保在主線程中執行（tkinter 視窗必須在主線程中創建）
+        if self.root:
+            # 工作時間倒數5秒，完成後進入休息
+            self.root.after(0, self._show_countdown_overlay, self._on_countdown_complete_for_rest)
+        else:
+            print("警告: 無法創建遮罩，root 視窗尚未初始化")
+    
+    def _show_countdown_overlay(self, on_complete):
+        """在主線程中顯示遮罩"""
         # 確保遮罩已初始化
         if not self.countdown_overlay:
             if self.root:
@@ -65,13 +78,8 @@ class TimerController:
                 print("警告: 無法創建遮罩，root 視窗尚未初始化")
                 return
         
-        # 根據當前狀態決定完成後的操作
-        if self.model.state == TimerState.RUNNING:
-            # 工作時間倒數5秒，完成後進入休息
-            self.countdown_overlay.show(on_complete=self._on_countdown_complete_for_rest)
-        elif self.model.state == TimerState.RESTING:
-            # 休息時間倒數5秒，完成後恢復視窗
-            self.countdown_overlay.show(on_complete=self._on_countdown_complete_for_restore)
+        # 顯示遮罩
+        self.countdown_overlay.show(on_complete=on_complete)
     
     def _on_countdown_complete_for_rest(self):
         """倒數完成後進入休息模式"""
