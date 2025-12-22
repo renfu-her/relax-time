@@ -6,6 +6,28 @@
 - 📦 **版本號升級至 0.4.0**
 - 更新所有相關文件中的版本號引用（pyproject.toml, setup.iss, build_release.py, README.md, RELEASE.md, RELEASE_NOTES.md, GITHUB_RELEASE.md）
 
+### 新增功能
+- 🎬 **全螢幕倒數遮罩（多螢幕支援）**：在倒數計時剩下 5 秒時顯示全螢幕透明黑色遮罩
+  - 支援多螢幕環境（Extend 模式），自動檢測所有顯示器
+  - 為每個螢幕創建獨立的遮罩視窗，確保所有螢幕都被覆蓋
+  - 主螢幕顯示大號倒數數字：5, 4, 3, 2, 1
+  - 其他螢幕只顯示遮罩（不顯示數字）
+  - 使用 Windows API (`EnumDisplayMonitors`) 檢測所有顯示器
+  - 倒數完成後自動關閉遮罩並執行相應操作
+
+### 功能調整
+- 🚫 **移除休息時間的遮罩**：從休息返回工作時不再顯示倒數計時和遮罩
+  - 休息時間結束後直接恢復視窗，無需等待倒數
+  - 提供更流暢的用戶體驗
+
+### 技術改進
+- 更新 `views/countdown_overlay.py`：
+  - 使用 `ctypes` 調用 Windows API 獲取所有顯示器信息
+  - 支援為多個螢幕創建遮罩視窗
+  - 改進視窗創建和顯示邏輯
+- 更新 `models/timer_model.py`：移除休息時間倒數 5 秒的遮罩邏輯
+- 更新 `controllers/timer_controller.py`：移除休息時間顯示遮罩的調用
+
 ## 2025-12-21 20:15:00
 
 ### 新增功能
