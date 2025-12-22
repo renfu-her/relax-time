@@ -107,7 +107,7 @@ def build_installer():
         return False
     
     # 檢查輸出文件
-    installer_path = Path("installer/RelaxTime-Setup-0.3.0.exe")
+    installer_path = Path("installer/RelaxTime-Setup-0.4.0.exe")
     if installer_path.exists():
         file_size = installer_path.stat().st_size / (1024 * 1024)  # MB
         print(f"\n✓ 安裝程式構建成功: {installer_path} ({file_size:.2f} MB)")
@@ -125,7 +125,7 @@ def prepare_release():
     
     files_to_copy = [
         ("dist/RelaxTime.exe", "RelaxTime.exe"),
-        ("installer/RelaxTime-Setup-0.3.0.exe", "RelaxTime-Setup-0.3.0.exe"),
+        ("installer/RelaxTime-Setup-0.4.0.exe", "RelaxTime-Setup-0.4.0.exe"),
         ("README.md", "README.md"),
         ("RELEASE_NOTES.md", "RELEASE_NOTES.md"),
     ]

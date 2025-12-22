@@ -1,5 +1,11 @@
 # 更改記錄 (Change Log)
 
+## 2025-12-22 14:39:05
+
+### 版本更新
+- 📦 **版本號升級至 0.4.0**
+- 更新所有相關文件中的版本號引用（pyproject.toml, setup.iss, build_release.py, README.md, RELEASE.md, RELEASE_NOTES.md, GITHUB_RELEASE.md）
+
 ## 2025-12-21 20:15:00
 
 ### 新增功能
