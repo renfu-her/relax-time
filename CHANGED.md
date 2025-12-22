@@ -1,5 +1,19 @@
 # 更改記錄 (Change Log)
 
+## 2025-12-21 20:15:00
+
+### 新增功能
+- 🎬 **全螢幕倒數遮罩**：在倒數計時剩下 5 秒時顯示全螢幕透明黑色遮罩
+- 遮罩上顯示倒數數字 5, 4, 3, 2, 1
+- 倒數完成後自動關閉遮罩並執行相應操作（進入休息或恢復視窗）
+- 支援工作時間和休息時間的倒數遮罩
+
+### 技術改進
+- 創建 `views/countdown_overlay.py`：全螢幕倒數遮罩視窗類
+- 更新 `models/timer_model.py`：添加 `on_final_countdown` 回調和 `final_countdown_shown` 標記
+- 更新 `controllers/timer_controller.py`：整合倒數遮罩邏輯
+- 更新 `views/__init__.py`：導出 `CountdownOverlay` 類
+
 ## 2025-12-21 19:56:42
 
 ### 移除功能

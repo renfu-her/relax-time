@@ -40,6 +40,7 @@ class TimerModel:
         self.on_timer_complete: Optional[Callable[[], None]] = None
         self.on_rest_complete: Optional[Callable[[], None]] = None
         self.on_countdown_warning: Optional[Callable[[], None]] = None  # 倒數18秒警告
+        self.on_final_countdown: Optional[Callable[[], None]] = None  # 倒數5秒遮罩
     
     def set_loop_mode(self, enabled: bool):
         """設置循環模式"""
@@ -111,6 +112,7 @@ class TimerModel:
             self.elapsed_before_pause = 0
             self.state = TimerState.RUNNING
             self.countdown_warning_played = False  # 重置警告音標記
+            self.final_countdown_shown = False  # 重置倒數5秒遮罩標記
         
         if self.on_state_change:
             self.on_state_change(self.state)
@@ -135,6 +137,8 @@ class TimerModel:
         self.start_time = None
         self.pause_time = None
         self.elapsed_before_pause = 0
+        self.countdown_warning_played = False
+        self.final_countdown_shown = False
         
         if self.on_state_change:
             self.on_state_change(self.state)
@@ -145,6 +149,7 @@ class TimerModel:
         self.rest_remaining_seconds = self.rest_duration * 60
         self.start_time = time.time()
         self.elapsed_before_pause = 0
+        self.final_countdown_shown = False  # 重置倒數5秒遮罩標記
         
         if self.on_state_change:
             self.on_state_change(self.state)
@@ -170,6 +175,12 @@ class TimerModel:
                     if self.on_countdown_warning:
                         self.on_countdown_warning()
                 
+                # 倒數5秒時顯示全螢幕遮罩（只顯示一次）
+                if self.remaining_seconds == 5 and not self.final_countdown_shown:
+                    self.final_countdown_shown = True
+                    if self.on_final_countdown:
+                        self.on_final_countdown()
+                
                 if self.remaining_seconds <= 0:
                     self.state = TimerState.IDLE
                     if self.on_timer_complete:
@@ -183,6 +194,12 @@ class TimerModel:
                 
                 if self.on_time_update:
                     self.on_time_update(self.rest_remaining_seconds)
+                
+                # 休息時間倒數5秒時顯示全螢幕遮罩（只顯示一次）
+                if self.rest_remaining_seconds == 5 and not self.final_countdown_shown:
+                    self.final_countdown_shown = True
+                    if self.on_final_countdown:
+                        self.on_final_countdown()
                 
                 if self.rest_remaining_seconds <= 0:
                     self.state = TimerState.IDLE

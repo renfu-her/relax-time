@@ -7,6 +7,7 @@ from models.timer_model import TimerModel, TimerState
 from views.main_window import MainWindow
 from views.tray_icon import TrayIcon
 from views.settings_window import SettingsWindow
+from views.countdown_overlay import CountdownOverlay
 from utils.window_manager import WindowManager
 from utils.startup_manager import StartupManager
 from utils.audio_player import AudioPlayer
@@ -32,6 +33,9 @@ class TimerController:
         # 視窗管理器
         self.window_manager = WindowManager()
         
+        # 倒數遮罩
+        self.countdown_overlay: Optional[CountdownOverlay] = None
+        
         # 設置 Model 回調
         self._setup_model_callbacks()
     
@@ -42,11 +46,51 @@ class TimerController:
         self.model.on_timer_complete = self._on_timer_complete
         self.model.on_rest_complete = self._on_rest_complete
         self.model.on_countdown_warning = self._on_countdown_warning
+        self.model.on_final_countdown = self._on_final_countdown
     
     def _on_countdown_warning(self):
         """倒數18秒警告回調 - 播放提示音"""
         print("倒數18秒，播放提示音...")
         AudioPlayer.play_countdown_alarm()
+    
+    def _on_final_countdown(self):
+        """倒數5秒回調 - 顯示全螢幕遮罩"""
+        print("倒數5秒，顯示全螢幕遮罩...")
+        
+        # 確保遮罩已初始化
+        if not self.countdown_overlay:
+            if self.root:
+                self.countdown_overlay = CountdownOverlay(parent_root=self.root)
+            else:
+                print("警告: 無法創建遮罩，root 視窗尚未初始化")
+                return
+        
+        # 根據當前狀態決定完成後的操作
+        if self.model.state == TimerState.RUNNING:
+            # 工作時間倒數5秒，完成後進入休息
+            self.countdown_overlay.show(on_complete=self._on_countdown_complete_for_rest)
+        elif self.model.state == TimerState.RESTING:
+            # 休息時間倒數5秒，完成後恢復視窗
+            self.countdown_overlay.show(on_complete=self._on_countdown_complete_for_restore)
+    
+    def _on_countdown_complete_for_rest(self):
+        """倒數完成後進入休息模式"""
+        print("倒數完成，準備進入休息模式...")
+        
+        # 遮罩會在倒數完成後自動關閉
+        # 視窗縮小和進入休息的邏輯將在 _on_timer_complete 中處理
+        # 這裡只是確保倒數已完成
+    
+    def _on_countdown_complete_for_restore(self):
+        """倒數完成後恢復視窗"""
+        print("倒數完成，恢復視窗...")
+        
+        # 嘗試恢復所有視窗
+        self.window_manager.restore_all_windows()
+        
+        # 顯示主視窗
+        if self.view:
+            self.view.show()
     
     def _on_time_update(self, seconds: int):
         """時間更新回調"""
@@ -98,6 +142,10 @@ class TimerController:
     def _on_rest_complete(self):
         """休息完成回調"""
         print("休息時間到，恢復正常工作...")
+        
+        # 如果遮罩還在顯示，先關閉它
+        if self.countdown_overlay and self.countdown_overlay.is_showing:
+            self.countdown_overlay.hide()
         
         # 嘗試恢復所有視窗（使用 Win+Shift+M）
         # 注意: 這可能無法完美恢復所有視窗，但可以嘗試
@@ -157,6 +205,9 @@ class TimerController:
         self.tray.on_show_window = self.show_window
         self.tray.on_exit = self.exit_app
         self.tray.start()
+        
+        # 初始化倒數遮罩（需要 root 視窗）
+        self.countdown_overlay = CountdownOverlay(parent_root=self.root)
         
         # 初始化顯示
         self.view.set_duration(self.model.get_current_duration())
