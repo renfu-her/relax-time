@@ -11,6 +11,7 @@ from views.countdown_overlay import CountdownOverlay
 from utils.window_manager import WindowManager
 from utils.startup_manager import StartupManager
 from utils.audio_player import AudioPlayer
+from utils.settings_db import get_settings_db
 
 
 class TimerController:
@@ -18,8 +19,19 @@ class TimerController:
     
     def __init__(self):
         """初始化控制器"""
+        # 初始化設定資料庫
+        self.settings_db = get_settings_db()
+        
+        # 從資料庫載入設定
+        default_duration = self.settings_db.get_int('default_duration', 30)
+        rest_duration = self.settings_db.get_int('rest_duration', 5)
+        
         # 初始化 Model
-        self.model = TimerModel(default_duration=30, rest_duration=5)
+        self.model = TimerModel(default_duration=default_duration, rest_duration=rest_duration)
+        
+        # 載入循環模式設定
+        loop_mode = self.settings_db.get_bool('loop_mode', False)
+        self.model.set_loop_mode(loop_mode)
         
         # 初始化 View
         self.root = None
@@ -203,7 +215,20 @@ class TimerController:
         self.settings.on_minimize_to_tray = self.minimize_to_tray
         
         # 初始化設定視窗狀態
-        startup_enabled = StartupManager.is_startup_enabled()
+        # 從資料庫載入開機啟動設定，如果資料庫沒有則從系統讀取
+        startup_enabled = self.settings_db.get_bool('startup_enabled', None)
+        if startup_enabled is None:
+            # 如果資料庫沒有，從系統讀取
+            startup_enabled = StartupManager.is_startup_enabled()
+            # 保存到資料庫
+            self.settings_db.set_bool('startup_enabled', startup_enabled)
+        else:
+            # 如果資料庫有設定，同步到系統
+            if startup_enabled:
+                StartupManager.enable_startup()
+            else:
+                StartupManager.disable_startup()
+        
         self.settings.set_startup_enabled(startup_enabled)
         self.settings.set_loop_mode(self.model.get_loop_mode())
         self.settings.set_rest_duration(self.model.get_rest_duration())
@@ -243,12 +268,16 @@ class TimerController:
     def change_duration(self, minutes: int):
         """改變時間設定"""
         self.model.set_duration(minutes)
+        # 保存到資料庫
+        self.settings_db.set_int('default_duration', minutes)
         if self.model.state == TimerState.IDLE:
             self.view.update_time_display(self.model.remaining_seconds)
     
     def set_loop_mode(self, enabled: bool):
         """設置循環模式"""
         self.model.set_loop_mode(enabled)
+        # 保存到資料庫
+        self.settings_db.set_bool('loop_mode', enabled)
     
     def toggle_startup(self, enabled: bool):
         """切換開機啟動"""
@@ -256,10 +285,14 @@ class TimerController:
             StartupManager.enable_startup()
         else:
             StartupManager.disable_startup()
+        # 保存到資料庫
+        self.settings_db.set_bool('startup_enabled', enabled)
     
     def change_rest_duration(self, minutes: int):
         """改變休息時間設定"""
         self.model.set_rest_duration(minutes)
+        # 保存到資料庫
+        self.settings_db.set_int('rest_duration', minutes)
     
     def show_settings(self):
         """顯示設定視窗"""

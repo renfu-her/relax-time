@@ -20,6 +20,11 @@ class MainWindow:
         self.root.title("Relax Time - 時間管理工具")
         self.root.resizable(False, False)
         
+        # 設置固定視窗大小 300x300
+        self.window_width = 300
+        self.window_height = 300
+        self.root.geometry(f"{self.window_width}x{self.window_height}")
+        
         # 設置視窗圖標（鬧鐘圖標）
         self._set_icon()
         
@@ -65,51 +70,56 @@ class MainWindow:
         menubar.add_cascade(label="設定", menu=settings_menu)
         settings_menu.add_command(label="設定...", command=self._on_show_settings)
         
-        # 主框架
-        main_frame = ttk.Frame(self.root, padding="20")
-        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        # 配置根視窗的列和行權重，使內容居中
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
         
-        # 時間顯示標籤
+        # 主框架
+        main_frame = ttk.Frame(self.root, padding="15")
+        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        main_frame.columnconfigure(0, weight=1)
+        
+        # 時間顯示標籤（居中）
         self.time_label = tk.Label(
             main_frame,
             text="30:00",
-            font=("Arial", 48, "bold"),
+            font=("Arial", 36, "bold"),
             fg="#2c3e50"
         )
-        self.time_label.grid(row=0, column=0, columnspan=3, pady=(0, 20))
+        self.time_label.grid(row=0, column=0, pady=(0, 10), sticky="")
         
-        # 狀態標籤
+        # 狀態標籤（居中）
         self.status_label = tk.Label(
             main_frame,
             text="準備就緒",
-            font=("Arial", 12),
+            font=("Arial", 10),
             fg="#7f8c8d"
         )
-        self.status_label.grid(row=1, column=0, columnspan=3, pady=(0, 20))
+        self.status_label.grid(row=1, column=0, pady=(0, 10), sticky="")
         
-        # 時間調整框架
-        time_frame = ttk.LabelFrame(main_frame, text="時間設定（分鐘）", padding="10")
-        time_frame.grid(row=2, column=0, columnspan=3, pady=(0, 20), sticky=(tk.W, tk.E))
+        # 時間調整框架（居中）
+        time_frame = ttk.LabelFrame(main_frame, text="時間設定（分鐘）", padding="8")
+        time_frame.grid(row=2, column=0, pady=(0, 10), sticky="")
         
         # 減少時間按鈕
         self.decrease_btn = ttk.Button(
             time_frame,
             text="−5",
-            width=5,
+            width=4,
             command=self._decrease_time
         )
-        self.decrease_btn.grid(row=0, column=0, padx=(0, 10))
+        self.decrease_btn.grid(row=0, column=0, padx=(0, 5))
         
         # 時間顯示（可調整）
         self.duration_var = tk.StringVar(value="30")
         self.duration_entry = ttk.Entry(
             time_frame,
             textvariable=self.duration_var,
-            width=10,
-            font=("Arial", 14),
+            width=8,
+            font=("Arial", 12),
             justify="center"
         )
-        self.duration_entry.grid(row=0, column=1, padx=5)
+        self.duration_entry.grid(row=0, column=1, padx=3)
         self.duration_entry.bind("<Return>", self._on_duration_entry_change)
         self.duration_entry.bind("<FocusOut>", self._on_duration_entry_change)
         
@@ -117,61 +127,59 @@ class MainWindow:
         self.increase_btn = ttk.Button(
             time_frame,
             text="+5",
-            width=5,
+            width=4,
             command=self._increase_time
         )
-        self.increase_btn.grid(row=0, column=2, padx=(10, 0))
+        self.increase_btn.grid(row=0, column=2, padx=(5, 0))
         
-        # 控制按鈕框架
+        # 控制按鈕框架（居中）
         control_frame = ttk.Frame(main_frame)
-        control_frame.grid(row=3, column=0, columnspan=3, pady=(0, 20))
+        control_frame.grid(row=3, column=0, pady=(0, 10), sticky="")
         
         # Start 按鈕
         self.start_btn = ttk.Button(
             control_frame,
             text="開始",
-            width=10,
+            width=8,
             command=self._on_start
         )
-        self.start_btn.grid(row=0, column=0, padx=5)
+        self.start_btn.grid(row=0, column=0, padx=3)
         
         # Pause 按鈕
         self.pause_btn = ttk.Button(
             control_frame,
             text="暫停",
-            width=10,
+            width=8,
             command=self._on_pause
         )
-        self.pause_btn.grid(row=0, column=1, padx=5)
+        self.pause_btn.grid(row=0, column=1, padx=3)
         
         # Stop 按鈕
         self.stop_btn = ttk.Button(
             control_frame,
             text="停止",
-            width=10,
+            width=8,
             command=self._on_stop
         )
-        self.stop_btn.grid(row=0, column=2, padx=5)
+        self.stop_btn.grid(row=0, column=2, padx=3)
         
-        # 設定按鈕
+        # 設定按鈕（居中）
         settings_btn = ttk.Button(
             main_frame,
             text="設定",
             command=self._on_show_settings
         )
-        settings_btn.grid(row=4, column=0, columnspan=3, pady=(0, 20))
+        settings_btn.grid(row=4, column=0, pady=(0, 5), sticky="")
         
         # 綁定視窗關閉事件
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
     
     def _center_window(self):
-        """將視窗置於螢幕中央"""
+        """將視窗置於螢幕中央，使用固定大小 300x300"""
         self.root.update_idletasks()
-        width = self.root.winfo_width()
-        height = self.root.winfo_height()
-        x = (self.root.winfo_screenwidth() // 2) - (width // 2)
-        y = (self.root.winfo_screenheight() // 2) - (height // 2)
-        self.root.geometry(f"{width}x{height}+{x}+{y}")
+        x = (self.root.winfo_screenwidth() // 2) - (self.window_width // 2)
+        y = (self.root.winfo_screenheight() // 2) - (self.window_height // 2)
+        self.root.geometry(f"{self.window_width}x{self.window_height}+{x}+{y}")
     
     def _decrease_time(self):
         """減少時間（5分鐘）"""
@@ -292,8 +300,10 @@ class MainWindow:
             self.stop_btn.config(state="disabled")
     
     def show(self):
-        """顯示視窗"""
+        """顯示視窗，保持固定大小 300x300"""
         self.root.deiconify()
+        # 確保視窗大小為固定值
+        self.root.geometry(f"{self.window_width}x{self.window_height}")
         self.root.lift()
         self.root.focus_force()
         self._center_window()
