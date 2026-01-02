@@ -21,7 +21,7 @@ uv run python build_release.py
 
 確保 `release/` 目錄包含：
 - `RelaxTime.exe` - 可執行文件
-- `RelaxTime-Setup-0.4.0.exe` - 安裝程式（如果已構建）
+- `RelaxTime-Setup-0.5.0.exe` - 安裝程式（如果已構建）
 - `README.md` - 說明文檔
 - `RELEASE_NOTES.md` - 發布說明
 
@@ -31,21 +31,21 @@ uv run python build_release.py
 
 ```bash
 # 創建並推送 tag
-git tag -a v0.4.0 -m "Release version 0.4.0"
-git push origin v0.4.0
+git tag -a v0.5.0 -m "Release version 0.5.0"
+git push origin v0.5.0
 ```
 
 或者使用 GitHub Web 界面：
 - 前往 Releases 頁面
 - 點擊 "Create a new release"
-- 在 "Choose a tag" 中輸入 `v0.4.0`
-- 選擇 "Create new tag: v0.4.0 on publish"
+- 在 "Choose a tag" 中輸入 `v0.5.0`
+- 選擇 "Create new tag: v0.5.0 on publish"
 
 ### 步驟 2: 填寫 Release 信息
 
 **Release title（標題）：**
 ```
-Relax Time v0.3.0
+Relax Time v0.5.0
 ```
 
 **Release notes（說明）：**
@@ -53,11 +53,11 @@ Relax Time v0.3.0
 可以使用 `RELEASE_NOTES.md` 的內容，或者使用以下精簡版本（包含版本差異說明）：
 
 ```markdown
-## 🎉 Relax Time v0.4.0
+## 🎉 Relax Time v0.5.0
 
 Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理工作時間和休息時間。
 
-## 🆕 v0.4.0 新增功能（相對於 v0.3.0）
+## 🆕 v0.5.0 新增功能（相對於 v0.3.0）
 
 ### 🎬 全螢幕倒數遮罩（多螢幕支援）
 - 在倒數計時剩下 5 秒時顯示全螢幕透明黑色遮罩
@@ -80,7 +80,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 
 ## 🆕 v0.2.0 新增功能（相對於 v0.1.0）
 
-### 🔊 倒數18秒提示音（v0.3.0 已更新為18秒，v0.4.0 繼續支援）
+### 🔊 倒數18秒提示音（v0.3.0 已更新為18秒，v0.5.0 繼續支援）
 - 當計時器倒數到最後18秒時，自動播放美妙的提示音
 - 幫助您提前準備，避免錯過休息時間
 - 每個計時週期只播放一次，不會重複
@@ -106,7 +106,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 ## 📦 下載
 
 ### 推薦：安裝程式
-- **Inno Setup 版本**：下載 `RelaxTime-Setup-0.4.0.exe` 並執行安裝
+- **Inno Setup 版本**：下載 `RelaxTime-Setup-0.5.0.exe` 並執行安裝
 
 ### 便攜版
 下載 `RelaxTime.exe` 直接執行（無需安裝）
@@ -137,7 +137,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 
 在 "Attach binaries" 區域：
 
-1. 上傳 `RelaxTime-Setup-0.4.0.exe`（安裝程式）- **推薦**
+1. 上傳 `RelaxTime-Setup-0.5.0.exe`（安裝程式）- **推薦**
 2. 上傳 `RelaxTime.exe`（可執行文件）- 便攜版
 
 **建議：**
@@ -165,7 +165,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 
 ## 版本差異說明
 
-### v0.4.0 vs v0.3.0
+### v0.5.0 vs v0.3.0
 
 #### 🆕 新增功能
 
@@ -186,7 +186,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 
 #### 🆕 新增功能
 
-**1. 🔊 倒數18秒提示音（v0.3.0 已更新為18秒，v0.4.0 繼續支援）**
+**1. 🔊 倒數18秒提示音（v0.3.0 已更新為18秒，v0.5.0 繼續支援）**
 - 當計時器倒數到最後18秒時，自動播放美妙的提示音
 - 幫助用戶提前準備，避免錯過休息時間
 - 每個計時週期只播放一次（防止重複播放）
@@ -219,7 +219,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 
 ### v0.1.0 基礎功能
 
-v0.1.0 包含以下核心功能（v0.4.0 繼續支援）：
+v0.1.0 包含以下核心功能（v0.5.0 繼續支援）：
 
 - ⏱️ **智能計時器**：可調整倒計時時間（以 5 分鐘為單位，預設 30 分鐘）
 - 🎯 **時間控制**：Start / Pause / Stop 完整控制
@@ -235,7 +235,7 @@ v0.1.0 包含以下核心功能（v0.4.0 繼續支援）：
 建議使用 [Semantic Versioning](https://semver.org/)：
 
 - `主版本號.次版本號.修訂號`
-- 例如：`0.4.0`, `0.5.0`, `1.0.0`
+- 例如：`0.5.0`, `0.5.0`, `1.0.0`
 
 ## 常見問題
 

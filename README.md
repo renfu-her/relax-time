@@ -92,7 +92,7 @@ uv run python build_installer.py
 # 打開 setup.iss 文件並編譯
 ```
 
-安裝程式會生成在 `installer/RelaxTime-Setup-0.4.0.exe`
+安裝程式會生成在 `installer/RelaxTime-Setup-0.5.0.exe`
 
 詳細說明請參考 [INSTALLER.md](INSTALLER.md)
 

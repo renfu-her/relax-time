@@ -1,5 +1,19 @@
 # 更改記錄 (Change Log)
 
+## 2026-01-02 09:52:56
+
+### 版本更新
+- 📦 **版本號升級至 0.5.0**
+- 更新所有相關文件中的版本號引用：
+  - `pyproject.toml`：項目版本號
+  - `setup.iss`：Inno Setup 安裝程式版本號
+  - `build_release.py`：構建腳本中的版本號引用
+  - `README.md`：文檔中的版本號引用
+  - `INSTALLER.md`：安裝程式文檔中的版本號引用
+  - `RELEASE.md`：GitHub Release 指南中的版本號
+  - `GITHUB_RELEASE.md`：GitHub Release 說明中的版本號
+  - `RELEASE_NOTES.md`：發布說明中的版本號
+
 ## 2026-01-02 09:47:14
 
 ### 新增功能

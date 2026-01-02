@@ -1,6 +1,6 @@
-# Relax Time v0.4.0
+# Relax Time v0.5.0
 
-## 🆕 v0.4.0 新功能
+## 🆕 v0.5.0 新功能
 
 ### 🎬 全螢幕倒數遮罩（多螢幕支援）
 - 在倒數計時剩下 5 秒時顯示全螢幕透明黑色遮罩
@@ -53,7 +53,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 ## 📦 下載
 
 ### 推薦：安裝程式
-下載 `RelaxTime-Setup-0.4.0.exe` 並執行安裝
+下載 `RelaxTime-Setup-0.5.0.exe` 並執行安裝
 
 **優點：**
 - 標準 Windows 安裝流程
@@ -72,7 +72,7 @@ Relax Time 是一個專為 Windows 設計的時間管理工具，幫助您管理
 ## 🚀 快速開始
 
 1. **安裝或執行**
-   - 使用安裝程式：下載 `RelaxTime-Setup-0.2.0.exe` 並安裝
+   - 使用安裝程式：下載 `RelaxTime-Setup-0.5.0.exe` 並安裝
    - 或直接執行：下載 `RelaxTime.exe` 雙擊運行
 
 2. **開始使用**
